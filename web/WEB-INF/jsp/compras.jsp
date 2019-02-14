@@ -126,8 +126,11 @@
                                     <label class="control-label">Fecha</label>
                                 </div>
                                 <div class="col-xs-9">
-                                    <input type="text" class="form-control" value="2015-12-4" name="fecha" id="fecha" placeholder="2015-12-4">
+                                    <input type="date" id="fecha" class="form-control">
                                 </div>
+                                <!--<div class="col-xs-9">max="2019-02-13" min="2019-01-13"
+                                    <input type="text" class="form-control" value="2015-12-4" name="fecha" id="fecha" placeholder="2015-12-4">
+                                </div>-->
                             </div>
                             <div class="form-group frm col-xs-12">
                                 <div class="col-xs-3">
@@ -143,7 +146,8 @@
                                     <p>Ingrese las plantas que se vendieron con su respectiva cantidad, tamaño y descuento</p>
                                 </div>
                                 <div class="form-group frm col-xs-2" >
-                                    <div class="btn btn-default" onclick="agregarNuevaLineaCompra()">Nuevo</div>
+                                    <div class="btn btn-default" onclick="agregarNuevaLineaCompra()">Nueva Compra</div>
+                                    <div class="btn btn-default" onclick="agregarSuministro()">Nuevo Suministro</div>
                                 </div>
                                 <div class="form-group frm col-xs-12" >
                                     <table id="tablaPlantas" class="table table-hover" style = "background-color: white">
