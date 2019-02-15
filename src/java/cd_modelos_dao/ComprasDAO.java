@@ -12,8 +12,12 @@ import cl_modelos_pojos.ModificacionesPlantasCompra;
 import cl_modelos_pojos.ModificacionesCompraPlantas;
 import cl_modelos_pojos.Plantas;
 import cl_modelos_pojos.ComprasPlanta;
+import cl_modelos_pojos.CompraSuministros;
 import cl_modelos_pojos.PlantasCompra;
 import cl_modelos_pojos.Proveedores;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
@@ -95,6 +99,7 @@ public class ComprasDAO {
         }
         return compra;
     }
+    
 
     public void crearArrayJSON(ComprasPlanta compra, String filtro, String data, boolean t) {
         try {
@@ -129,6 +134,7 @@ public class ComprasDAO {
                 }
                 pv.setCantidad(array.getJSONObject(i).getInt("cantidad"));
                 pv.setDescuento(array.getJSONObject(i).getInt("descuento"));
+                pv.setValorCompra(array.getJSONObject(i).getInt("valorCompra"));
                 pv.setEtapasPlanta(ep);
                 pv.setComprasPlanta(compra);
                 compra.getPlantasCompras().add(pv);
@@ -138,7 +144,44 @@ public class ComprasDAO {
         }
     }
     
-    public void ingresarCompra(String data) {
+    public void insertarSuministro(int proveedor, Date fecha, int factura, int idSuministro, int valorCompra, int cantidad){
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Transaction t = null;
+        Session s = sf.openSession();
+        t = s.beginTransaction();
+        
+        Query q = s.createSQLQuery(
+                "INSERT INTO public.compra_suministros (proveedores_cedula,fecha,nro_factura,id_suministro,valor_compra,cantidad) "
+                        + "values (:proveedores_cedula,:fecha,:nro_factura,:id_suministro,:valor_compra,:cantidad)");
+        q.setInteger("proveedores_cedula", proveedor);
+        q.setDate("fecha", fecha);
+        q.setInteger("nro_factura", factura);
+        q.setInteger("id_suministro", idSuministro);
+        q.setInteger("valor_compra", valorCompra);
+        q.setInteger("cantidad", cantidad);
+        q.executeUpdate();
+        t.commit();
+        s.close();
+    }
+    
+    public void ingresarSuministros(String data) throws JSONException{
+        JSONObject objeto = new JSONObject(data);
+        int proveedor = Integer.parseInt(obtenerDentroParentesis(objeto.getString("proveedor")));
+        int factura = Integer.parseInt(objeto.getString("factura"));
+        Date fecha = new Date(objeto.getString("fecha"));
+        JSONArray suministros = objeto.getJSONArray("suministros");
+        for (int i = 0; i < suministros.length(); i++) {
+            int id = Integer.parseInt(suministros.getJSONObject(i).getString("idSuministro"));
+            int cantidad = Integer.parseInt(suministros.getJSONObject(i).getString("cantidadSuministro"));
+            int valor = Integer.parseInt(suministros.getJSONObject(i).getString("valorCompra"));
+            insertarSuministro(proveedor,fecha,factura,id,valor,cantidad);
+        }
+    }
+    
+    public void ingresarCompra(String data) throws JSONException {
+        
+        //ingresarSuministros(data);
+        
         ComprasPlanta compra = crearCompra(data, false);
         crearArrayJSON(compra, "lineas", data, false);
         SessionFactory sf = null;
@@ -174,8 +217,26 @@ public class ComprasDAO {
             throw new RuntimeException("No se pudo guardar el servicio");
         }
     }
+    
+    public List getSuministrosCompra(int factura) {
+        //List<> listado = new LinkedList<>();
+        List<String> listado = new LinkedList<String>();
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Transaction t = null;
+        Session s = sf.openSession();
+        t = s.beginTransaction();
+        Query q = s.createSQLQuery("SELECT s.nombre, s.descripcion, valor_compra, cantidad " +
+            "FROM public.compra_suministros as cs join public.suministros as s on cs.id_suministro = s.id where cs.nro_factura = :idFactura");
+        q.setInteger("idFactura", factura);
+        listado = q.list();
+        q.executeUpdate();
+        t.commit();
+        s.close();
+        return listado;
+    }
 
     public ComprasPlanta consultarCompraPorId(int id) {
+        //List a = getSuministrosCompra(99);
         SessionFactory sf = HibernateUtil.getSessionFactory();
         Session s = sf.openSession();
         ComprasPlanta ser = (ComprasPlanta) s.get(ComprasPlanta.class, id);

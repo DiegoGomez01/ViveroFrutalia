@@ -26,7 +26,7 @@ public class PlantasCompra  implements java.io.Serializable {
      private EtapasPlanta etapasPlanta;
      private int cantidad;
      private Integer descuento;
-
+     private int valor_compra;
     public PlantasCompra() {
     }
 
@@ -43,6 +43,14 @@ public class PlantasCompra  implements java.io.Serializable {
        this.etapasPlanta = etapasPlanta;
        this.cantidad = cantidad;
        this.descuento = descuento;
+    }
+    public PlantasCompra(int id, ComprasPlanta comprasPlanta, EtapasPlanta etapasPlanta, int cantidad, Integer descuento, int valorCompra) {
+       this.id = id;
+       this.comprasPlanta = comprasPlanta;
+       this.etapasPlanta = etapasPlanta;
+       this.cantidad = cantidad;
+       this.descuento = descuento;
+       this.valor_compra = valorCompra;
     }
    
      @Id 
@@ -100,7 +108,14 @@ public class PlantasCompra  implements java.io.Serializable {
     }
 
 
-
+    @Column(name="valor_compra")
+    public int getValorCompra() {
+        return this.valor_compra;
+    }
+    
+    public void setValorCompra(int valor) {
+        this.valor_compra = valor;
+    }
 
 }
 

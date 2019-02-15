@@ -66,6 +66,13 @@ public class plantasController {
         return convertidor.mapaPlantas(plantasDAO.obtenerPlantas());
     }
     
+    @RequestMapping(value = "/consultarSuministros.htm", method = RequestMethod.GET)
+    public @ResponseBody String consultarSuministros() {
+        PlantasDAO plantasDAO = new PlantasDAO();
+        JJSON convertidor = new JJSON();
+        return convertidor.mapaSuministros(plantasDAO.obtenerSuministros());
+    }
+    
     @RequestMapping(value = "/administrar_plantas.htm", method = RequestMethod.GET)
     public String administrarPlantas() {
         return "adminPlantas";

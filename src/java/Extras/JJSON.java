@@ -6,6 +6,7 @@ import cl_modelos_pojos.Etapas;
 import cl_modelos_pojos.Plantas;
 import cl_modelos_pojos.PlantasCompra;
 import cl_modelos_pojos.PlantasVenta;
+import cl_modelos_pojos.Suministros;
 import cl_modelos_pojos.Usuario;
 import cl_modelos_pojos.VentasPlanta;
 import java.util.List;
@@ -54,6 +55,15 @@ public class JJSON {
         String mensaje = "[";
         for (Plantas planta : c) {
             mensaje += "{\"id\":\"" + String.valueOf(planta.getId()) + "\",\"nombre\":\"" + planta.getNombre() + "\",\"descripcion\":\"" + planta.getDescripcion() + "\",\"tipo\":\"" + String.valueOf(planta.getTipoPlanta().getId()) + "\",\"imagen\":\"" + planta.getImagen() + "\"},";
+        }
+        mensaje = mensaje.substring(0, mensaje.length() - 1) + "]";
+        return mensaje;
+    }
+    
+    public String mapaSuministros(List<Suministros> c) {
+        String mensaje = "[";
+        for (Suministros suministro : c) {
+            mensaje += "{\"id\":\"" + String.valueOf(suministro.getId()) + "\",\"nombre\":\"" + suministro.getNombre() + "\",\"descripcion\":\"" + suministro.getDescripcion() + "\",\"visibilidad\":\"" + String.valueOf(suministro.getVisibilidad())+ "\"},";
         }
         mensaje = mensaje.substring(0, mensaje.length() - 1) + "]";
         return mensaje;

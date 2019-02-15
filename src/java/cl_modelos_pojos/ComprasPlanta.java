@@ -100,10 +100,7 @@ public class ComprasPlanta  implements java.io.Serializable {
     public void setPlantasCompras(Set<PlantasCompra> plantasCompras) {
         this.plantasCompras = plantasCompras;
     }
-
-
-
-
+    
 }
 
 

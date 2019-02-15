@@ -10,6 +10,10 @@ var lineas = new Array();
 
 function editarCompra(id) {
     window.location = "compras_consultar.htm?id=" + id;
+    //$.post("compras_consultar.htm?id=" + id, {}, function (respuesta) {
+        //console.log(respuesta);
+        //location.reload(true);
+    //});
 }
 function redimensionar(i, ii, j) {
     
@@ -83,6 +87,16 @@ function eliminarLineaCompraAdicionada(id) {
     $('#panelNuevo_' + id).remove();
 }
 
+function changeSuministro(id){
+    var suministros = JSON.parse(localStorage.getItem('suministros'));
+    for (var i = 0; i < suministros.length; i++) {
+        if(suministros[i]["id"] == document.getElementById("idSuministro_"+(id-1)).value){
+           document.getElementById("descripcionSuministro_"+(id-1)).value = suministros[i]["descripcion"]; 
+           break;
+        }
+    }
+}
+
 function crearTDLineaSuministro() {
     mensaje =
             "<td >" +
@@ -94,7 +108,15 @@ function crearTDLineaSuministro() {
             "<label class='control-label'>Nombre suministro</label>" +
             "</div>" +
             "<div class='col-xs-9'>" +
-            "<input type='text' class='form-control' id='nombre_" + contadorNuevos + "'>"+
+            "<select id='idSuministro_" + contadorNuevos + "' class='form-control' onchange='changeSuministro(contadorNuevos)'>";
+                var suministros = JSON.parse(localStorage.getItem('suministros'));
+                for (var i = 0; i < suministros.length; i++) {
+                    mensaje += '<option value="'+suministros[i]["id"]+'">';
+                    mensaje += suministros[i]["nombre"] + ' (' + suministros[i]["id"] + ')';
+                    mensaje += '</option>';
+                }
+                mensaje +=
+            "</select>" +
             "</div>" +
             "</div>" +
             "<div class='col-xs-12 frm form-group'>" +
@@ -102,21 +124,21 @@ function crearTDLineaSuministro() {
             "<label class='control-label'>Descripción </label>" +
             "</div>" +
             "<div class='col-xs-9'>" +
-                "<textarea class='form-control' rows='4' id='descripcionSuministro_" + contadorNuevos + "'></textarea>"+
+                "<textarea disabled class='form-control' rows='4' id='descripcionSuministro_" + contadorNuevos + "'></textarea>"+
             "</div>" +
             "</div>" +
             "<div class='col-xs-12 frm form-group'>" +
             "<div class='col-xs-3'>" +
-            "<label class='control-label'>Precio de Compra </label>" +
+            "<label class='control-label'>Valor Compra </label>" +
             "</div>" +
             "<div class='col-xs-3'>" +
             "<input type='number' class='form-control' value='0' id='pCompra_" + contadorNuevos + "' >" +
             "</div>" +
             "<div class='col-xs-3'>" +
-            "<label class='control-label'>Precio de Venta</label>" +
+            "<label class='control-label'>Cantidad </label>" +
             "</div>" +
             "<div class='col-xs-3'>" +
-            "<input type='number' class='form-control' value='0' id='pVenta_" + contadorNuevos + "' >" +
+            "<input type='text' class='form-control' value='0'  id='cantidad_Suministro_" + contadorNuevos + "' >" +
             "</div>" +
             "</div>" +
             "</td>";
@@ -141,7 +163,7 @@ function crearTDLineaCompra() {
     var plantas = JSON.parse(localStorage.getItem('plantas'));
     //alert(localStorage.getItem('plantas'));
     for (var i = 0; i < plantas.length; i++) {
-        mensaje += '<option>';
+        mensaje += '<option value="'+plantas[i]["id"]+'">';
         mensaje += plantas[i]["nombre"] + ' (' + plantas[i]["id"] + ')';
         mensaje += '</option>';
     }
@@ -180,6 +202,14 @@ function crearTDLineaCompra() {
             "</div>" +
             "<div class='col-xs-3'>" +
             "<input type='text' class='form-control' value='0' id='descuento_" + contadorNuevos + "' >" +
+            "</div>" +
+            "</div>" +
+            "<div class='col-xs-12 frm form-group'>" +
+            "<div class='col-xs-3'>" +
+            "<label class='control-label'>Valor Compra</label>" +
+            "</div>" +
+            "<div class='col-xs-9'>" +
+            "<input type='number' class='form-control' value='0'  id='valorCompra_" + contadorNuevos + "' >" +
             "</div>" +
             "</div>" +
             "</td>";
@@ -231,31 +261,35 @@ function registrarCompra() {
         factura: $("#factura").val()
     };
     var lines = new Array();
+    var suministros = new Array();
     for (var i = 0; i < lineas.length; i++) {
         id = lineas[i].attr("id").substring(11);
         if($("#planta_" + id).val() === undefined){
-            linea = {
-                nombre:$("#nombre_" + id).val(),
-                descripcion:$("#descripcionSuministro_" + id).val(),
+            suministro = {
+                
+                idSuministro:$("#idSuministro_" + id).val(),
                 valorCompra:$("#pCompra_" + id).val(),
-                valorVenta:$("#pVenta_" + id).val()
+                cantidadSuministro:$("#cantidad_Suministro_" + id).val()
             };
+            suministros.push(suministro);
         }else{
             linea = {
                 planta: $("#planta_" + id).val(),
                 etapa: $("#etapa_" + id).val(),
                 cantidad: $("#cantidad_" + id).val(),
-                descuento: $("#descuento_" + id).val()
+                descuento: $("#descuento_" + id).val(),
+                valorCompra: $("#valorCompra_" + id).val()
             };
-        }
-        
-        lines.push(linea);
+            lines.push(linea);
+        }   
     }
     data['lineas'] = lines;
-    console.log(data);
-    //$.post("compras_registrar.htm", {data: JSON.stringify(data)}, function (respuesta) {
+    data['suministros'] = suministros;
+    console.log(JSON.stringify(data));
+    $.post("compras_registrar.htm", {data: JSON.stringify(data)}, function (respuesta) {
+        //console.log(respuesta);
         //location.reload(true);
-    //});
+    });
 
 }
 

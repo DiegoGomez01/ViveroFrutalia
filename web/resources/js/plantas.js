@@ -241,6 +241,13 @@ function cargarTabla() {
         }
     }
     );
+    $.get("consultarSuministros.htm", {}, function (respuesta) {
+        console.log(respuesta);
+        localStorage.setItem("suministros",respuesta);
+        var datos = JSON.parse(respuesta);
+        console.log("Datos: " + datos);
+    }
+    );
 }
 
 function cargarArchivo() {

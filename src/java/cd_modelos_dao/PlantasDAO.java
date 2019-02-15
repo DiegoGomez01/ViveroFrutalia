@@ -11,6 +11,7 @@ import cl_modelos_pojos.EtapasPlanta;
 import cl_modelos_pojos.Plantas;
 import cl_modelos_pojos.PlantasCompra;
 import cl_modelos_pojos.PlantasVenta;
+import cl_modelos_pojos.Suministros;
 import cl_modelos_pojos.TipoPlanta;
 import cl_modelos_pojos.VentasPlanta;
 import java.util.HashSet;
@@ -100,6 +101,16 @@ public class PlantasDAO {
         lista = q.list();
         s.close();
 
+        return lista;
+    }
+    
+    public List<Suministros> obtenerSuministros() {
+        List<Suministros> lista = new LinkedList<>();
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        Session s = sf.openSession();
+        Query q = s.createQuery("from Suministros order by id");
+        lista = q.list();
+        s.close();
         return lista;
     }
     

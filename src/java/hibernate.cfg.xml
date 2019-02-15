@@ -45,7 +45,7 @@ Contributor(s):
     <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
     <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/frutalia</property>
     <property name="hibernate.connection.username">postgres</property>
-    <property name="hibernate.connection.password">openpg</property>
+    <property name="hibernate.connection.password">root</property>
     <mapping resource="cl_modelos_pojos/Suministros.hbm.xml"/>
     <mapping resource="cl_modelos_pojos/PlantasVenta.hbm.xml"/>
     <mapping resource="cl_modelos_pojos/Proveedores.hbm.xml"/>

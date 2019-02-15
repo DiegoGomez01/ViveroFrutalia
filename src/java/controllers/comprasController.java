@@ -8,6 +8,11 @@ package controllers;
 
 import cd_modelos_dao.ComprasDAO;
 import cl_modelos_pojos.ComprasPlanta;
+import com.google.gson.JsonObject;
+import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,12 +41,20 @@ public class comprasController {
         ComprasDAO comprasDAO = new ComprasDAO();
         ComprasPlanta s = comprasDAO.consultarCompraPorId(id);
         model.addAttribute("compra", s);
+        
+        /*List prueba = comprasDAO.getSuministrosCompra(id);
+        String listString = "";
+
+        for (Object list : prueba){
+            listString += list + "\t";
+        }*/
+        //return "comprasDetalle";
         return "comprasDetalle";
     }
 
     @RequestMapping(value = "/compras_registrar.htm", method = RequestMethod.POST)
     public @ResponseBody
-    String registrarCompra(@RequestParam("data") String data, Model model) {
+    String registrarCompra(@RequestParam("data") String data, Model model) throws JSONException {
         ComprasDAO comprasDAO = new ComprasDAO();
         System.out.println("---------------------------"+data+"---------------------------");
         comprasDAO.ingresarCompra(data);
